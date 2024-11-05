@@ -154,6 +154,10 @@
                     <input type="email" id="email" class="mt-1 block w-full border border-gray-300 rounded-md p-2" required>
                 </div>
                 <div class="mb-4">
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                    <input type="tel" id="phone" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="e.g. +62123456789" required>
+                </div>
+                <div class="mb-4">
                     <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
                     <textarea id="message" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md p-2" required></textarea>
                 </div>
@@ -189,12 +193,27 @@
         const confirmationMessage = document.getElementById('confirmationMessage');
 
         contactForm.addEventListener('submit', function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
+
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
             const message = document.getElementById('message').value;
 
-            confirmationMessage.textContent = `Thank you, ${name}! We will contact you at ${email}. Your message: "${message}"`;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phonePattern = /^\+?\d{1,4}?\s?\d{1,14}$/; 
+
+            if (!emailPattern.test(email) || !phonePattern.test(phone)) {
+                alert('Please enter a valid email and phone number.');
+                return;
+            }
+
+            const whatsappMessage = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`;
+            const whatsappLink = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
+
+            window.open(whatsappLink, '_blank');
+
+            confirmationMessage.textContent = `Thank you, ${name}! Your message has been sent.`;
             confirmationMessage.classList.remove('hidden');
             contactForm.reset();
         });
